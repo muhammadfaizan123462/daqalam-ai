@@ -19,6 +19,7 @@ def test_root_serves_app():
     assert "Da Qalam AI" in resp.text
     assert "Pashto Poetry Assistant" in resp.text
     assert 'id="poem-input"' in resp.text
+    assert 'id="mode-badge"' in resp.text
 
 
 def test_status_reports_demo_without_key(monkeypatch):

@@ -261,11 +261,12 @@ function esc(s) {
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
-function setBadge(mode) {
+function setBadge(mode, provider) {
   var badge = document.getElementById("mode-badge");
   if (!badge) return;
   if (mode === "live") {
-    badge.textContent = "● Live AI (Qwen)";
+    var name = provider === "gemini" ? "Gemini" : "Qwen";
+    badge.textContent = "● Live AI (" + name + ")";
     badge.className = "mode-badge mode-live";
   } else {
     badge.textContent = "● Demo mode — sample explanations";
@@ -326,7 +327,7 @@ function renderResult(result) {
   document.getElementById("empty-state").hidden = true;
   document.getElementById("loading").hidden = true;
   document.getElementById("results").hidden = false;
-  setBadge(result.mode);
+  setBadge(result.mode, result.provider);
 }
 
 function showLoading(show) {
@@ -451,7 +452,7 @@ function init() {
   /* Ask the server which mode it is in; stay on demo if unreachable. */
   fetch("/api/status")
     .then(function (resp) { return resp.json(); })
-    .then(function (s) { setBadge(s.mode === "live" ? "live" : "demo"); })
+    .then(function (s) { setBadge(s.mode === "live" ? "live" : "demo", s.provider); })
     .catch(function () { setBadge("demo"); });
 }
 

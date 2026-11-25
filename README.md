@@ -57,18 +57,22 @@ structural reading (glossary matches, themes, emotions) for any other poem.
 It says plainly that full interpretation needs live AI, and it does not
 invent translations for poems it has not seen.
 
-### Live mode (Qwen)
+### Live mode (Qwen, then Gemini)
 
 ```bash
 pip install -r requirements.txt
-QWEN_API_KEY=your-dashscope-key python server.py
+QWEN_API_KEY=your-dashscope-key GEMINI_API_KEY=your-gemini-key python server.py
 # open http://127.0.0.1:8000
 ```
 
 The server sends the poem to Qwen (Alibaba DashScope, OpenAI-compatible
 endpoint) with the Da Qalam system prompt and returns structured JSON.
-The key lives **only** in the `QWEN_API_KEY` environment variable on the
-server — never in the frontend or in source code.
+If Qwen is not configured or its call fails, the server tries Gemini
+(Google AI Studio, model `gemini-3-flash-preview`) with the same prompt
+and the same JSON contract, and reports which provider answered in the
+`provider` field. The keys live **only** in the `QWEN_API_KEY` and
+`GEMINI_API_KEY` environment variables on the server — never in the
+frontend or in source code.
 
 ## Project structure
 
@@ -80,6 +84,7 @@ server — never in the frontend or in source code.
 | `server.py` | FastAPI: serves the site + `POST /api/analyze`, `GET /api/status` |
 | `demo.py` | Honest rule-based demo engine (glossary, themes, sample analysis) |
 | `qwen_client.py` | Qwen/DashScope client (httpx), key from env only |
+| `gemini_client.py` | Gemini client (httpx), key from env only, fallback provider |
 | `connector/` | Muse connector doc + `bin/qwen.py` helper for calling Qwen directly |
 | `requirements.txt` | fastapi, uvicorn, httpx |
 | `tests/` | pytest suite (demo engine + API) |
@@ -87,12 +92,12 @@ server — never in the frontend or in source code.
 ## API
 
 - `GET /` — the app
-- `GET /api/status` — `{"mode": "demo"|"live", "qwen_configured": bool}`
+- `GET /api/status` — `{"mode": "demo"|"live", "qwen_configured": bool, "gemini_configured": bool, "provider": "qwen"|"gemini"|null}`
 - `POST /api/analyze` — body `{"poem": "...", "language": "ps"|"ur"|"en"}`.
   Returns `mode`, `meaning`, `translation_urdu`, `translation_english`,
   `difficult_words[]`, `emotions[]`, `themes[]`, `message`, `summary`,
-  `stats`. Empty poem → 400. If Qwen fails, the server falls back to the
-  demo engine and says so in `live_error`.
+  `stats`. Empty poem → 400. If both LLM providers fail, the server falls
+  back to the demo engine and says so in `live_error`.
 
 ## Tests
 

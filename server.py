@@ -5,8 +5,10 @@ POST /api/analyze {poem, language}:
 
 - If QWEN_API_KEY is set, the poem is sent to Qwen (DashScope) with the
   Da Qalam system prompt and the JSON answer is returned with
-  mode="live".
-- Otherwise (or if the Qwen call fails), the honest rule-based demo
+  mode="live". If Qwen is unavailable or fails, the server tries Gemini
+  (Google AI Studio) with the same prompt and contract, returning
+  mode="live" with provider="gemini".
+- Otherwise (or if both LLM calls fail), the honest rule-based demo
   engine answers with mode="demo" — clearly labelled, never pretending
   to be live AI.
 
@@ -26,6 +28,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from demo import LANGUAGES, analyze_demo
+from gemini_client import GeminiUnavailable, get_client as get_gemini_client
 from qwen_client import SYSTEM_PROMPT, QwenUnavailable, get_client
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -50,8 +53,8 @@ class AnalyzeRequest(BaseModel):
     language: str = "ps"
 
 
-def _parse_qwen_json(content: str) -> dict | None:
-    """Extract a JSON object from Qwen's reply (tolerates ```json fences)."""
+def _parse_llm_json(content: str) -> dict | None:
+    """Extract a JSON object from an LLM reply (tolerates ```json fences)."""
     text = content.strip()
     if text.startswith("```"):
         text = text.strip("`").strip()
@@ -66,36 +69,14 @@ def _parse_qwen_json(content: str) -> dict | None:
     return data
 
 
-def analyze_live(poem: str, language: str) -> dict:
-    """Ask Qwen for a structured analysis. Raises on any failure."""
-    client = get_client()
-    if not client.is_available():
-        raise QwenUnavailable("No Qwen API key configured.")
-    lang_name = {"ps": "Pashto", "ur": "Urdu", "en": "English"}[language]
-    user_message = (
-        f"Poem (Pashto):\n{poem}\n\n"
-        f"Give the explanation in {lang_name}. "
-        "Respond with valid JSON only, no other text, using exactly these keys: "
-        "meaning (string), translation_urdu (string), translation_english (string), "
-        "difficult_words (array of objects with word, meaning_ur, meaning_en, note), "
-        "emotions (array of strings), themes (array of strings), "
-        "message (string), summary (string)."
-    )
-    result = client.complete(
-        [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_message},
-        ]
-    )
-    data = _parse_qwen_json(result["content"])
-    if data is None:
-        raise RuntimeError("Qwen did not return valid JSON.")
-    missing = [k for k in ANALYSIS_KEYS if k not in data]
-    if missing:
-        raise RuntimeError(f"Qwen JSON missing keys: {missing}")
+def _build_live_result(
+    poem: str, language: str, data: dict, provider: str, model: str
+) -> dict:
+    """Shape one provider's parsed JSON into the /api/analyze response."""
     stats_lines = len([ln for ln in poem.splitlines() if ln.strip()])
     return {
         "mode": "live",
+        "provider": provider,
         "poem": poem,
         "language": language,
         "stats": {
@@ -111,15 +92,72 @@ def analyze_live(poem: str, language: str) -> dict:
         "themes": data["themes"],
         "message": data["message"],
         "summary": data["summary"],
-        "model": result["model"],
+        "model": model,
     }
+
+
+def _try_provider(
+    provider: str, poem: str, language: str, messages: list[dict]
+) -> dict:
+    """Ask one provider for a structured analysis. Raises on any failure."""
+    if provider == "qwen":
+        client = get_client()
+        if not client.is_available():
+            raise QwenUnavailable("No Qwen API key configured.")
+    else:
+        client = get_gemini_client()
+        if not client.is_available():
+            raise GeminiUnavailable("No Gemini API key configured.")
+    result = client.complete(messages)
+    data = _parse_llm_json(result["content"])
+    if data is None:
+        raise RuntimeError(f"{provider} did not return valid JSON.")
+    missing = [k for k in ANALYSIS_KEYS if k not in data]
+    if missing:
+        raise RuntimeError(f"{provider} JSON missing keys: {missing}")
+    return _build_live_result(poem, language, data, provider, result["model"])
+
+
+def analyze_live(poem: str, language: str) -> dict:
+    """Ask Qwen first, then Gemini, for a structured analysis.
+
+    Raises on any failure, so the caller can fall back to demo mode.
+    """
+    lang_name = {"ps": "Pashto", "ur": "Urdu", "en": "English"}[language]
+    user_message = (
+        f"Poem (Pashto):\n{poem}\n\n"
+        f"Give the explanation in {lang_name}. "
+        "Respond with valid JSON only, no other text, using exactly these keys: "
+        "meaning (string), translation_urdu (string), translation_english (string), "
+        "difficult_words (array of objects with word, meaning_ur, meaning_en, note), "
+        "emotions (array of strings), themes (array of strings), "
+        "message (string), summary (string)."
+    )
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": user_message},
+    ]
+    last_exc: Exception | None = None
+    for provider in ("qwen", "gemini"):
+        try:
+            return _try_provider(provider, poem, language, messages)
+        except Exception as exc:  # noqa: BLE001 - try the next provider
+            last_exc = exc
+    raise RuntimeError(f"All LLM providers failed: {last_exc}")
 
 
 @app.get("/api/status")
 def status() -> dict:
-    """Which mode the server is in (live Qwen vs demo)."""
-    configured = get_client().is_available()
-    return {"mode": "live" if configured else "demo", "qwen_configured": configured}
+    """Which mode the server is in (live Qwen/Gemini vs demo)."""
+    qwen = get_client().is_available()
+    gemini = get_gemini_client().is_available()
+    provider = "qwen" if qwen else ("gemini" if gemini else None)
+    return {
+        "mode": "live" if provider else "demo",
+        "qwen_configured": qwen,
+        "gemini_configured": gemini,
+        "provider": provider,
+    }
 
 
 @app.post("/api/analyze")

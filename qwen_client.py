@@ -85,7 +85,16 @@ class QwenClient:
             "Content-Type": "application/json",
         }
         try:
-            with httpx.Client(timeout=timeout) as client:
+            # trust_env=False: the sandbox no_proxy list contains bracketed
+            # IPv6 entries ([::1]) that httpx cannot parse as proxy patterns.
+            # The egress proxy is passed explicitly instead. verify uses
+            # SSL_CERT_FILE when set (the sandbox egress CA bundle, the same
+            # one urllib reads); otherwise httpx's default bundle applies.
+            proxy = os.environ.get("https_proxy") or os.environ.get("HTTPS_PROXY")
+            verify = os.environ.get("SSL_CERT_FILE") or True
+            with httpx.Client(
+                timeout=timeout, trust_env=False, proxy=proxy, verify=verify
+            ) as client:
                 response = client.post(url, json=payload, headers=headers)
         except httpx.HTTPError as exc:
             raise RuntimeError(f"Qwen request failed: {exc}") from exc

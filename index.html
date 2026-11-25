@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Da Qalam AI — Pashto Poetry Assistant</title>
+<meta name="description" content="Understand Pashto poetry in simple language. Explanations, translations, difficult words, emotions and themes — in Pashto, Urdu and English.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">ق</span>
+      <span class="brand-text">
+        <span class="brand-name">Da Qalam <span class="gold">AI</span></span>
+        <span class="brand-tag">Pashto Poetry Assistant</span>
+      </span>
+    </div>
+    <span id="mode-badge" class="mode-badge mode-demo" role="status">● Demo mode — sample explanations</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="hero-eyebrow">د قلم • The Pen of Pashto Literature</p>
+    <h1>Understand Pashto poetry,<br><span class="gold">beautifully.</span></h1>
+    <p class="hero-sub" lang="ps" dir="rtl">د پښتو شاعرۍ پوهه، په ساده ژبه — د زده‌کوونکو لپاره</p>
+    <p class="hero-desc">
+      Paste a Pashto poem and get a simple explanation, Urdu and English
+      translations, difficult words explained, and the emotions, themes
+      and message behind the verse — in Pashto, Urdu or English.
+    </p>
+    <div class="hero-chips">
+      <span class="chip">Rahman Baba sample included</span>
+      <span class="chip">3 languages</span>
+      <span class="chip">Made for students</span>
+    </div>
+  </section>
+
+  <section class="panel input-panel" aria-label="Poetry input">
+    <div class="panel-head">
+      <h2>Your poem</h2>
+      <span class="panel-hint">Paste Pashto poetry below</span>
+    </div>
+
+    <label class="sr-only" for="poem-input">Pashto poetry</label>
+    <textarea id="poem-input" lang="ps" dir="rtl" rows="6"
+      placeholder="دلته خپل شعر ولیکئ… — Paste your Pashto poem here…"></textarea>
+    <div class="input-meta">
+      <span id="char-count">0 characters</span>
+      <span class="input-meta-hint">Works best with 2–20 lines</span>
+    </div>
+
+    <div class="controls">
+      <div class="lang-switch" role="group" aria-label="Explanation language">
+        <button type="button" class="lang-btn is-active" data-lang="ps" lang="ps">پښتو</button>
+        <button type="button" class="lang-btn" data-lang="ur" lang="ur">اردو</button>
+        <button type="button" class="lang-btn" data-lang="en">English</button>
+      </div>
+      <div class="actions">
+        <button type="button" id="sample-btn" class="btn btn-ghost">✦ Try the sample</button>
+        <button type="button" id="clear-btn" class="btn btn-ghost">Clear</button>
+        <button type="button" id="analyze-btn" class="btn btn-gold">Analyze the poem →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel results-panel" aria-label="Analysis results" aria-live="polite">
+    <div id="empty-state" class="empty-state">
+      <div class="empty-quill" aria-hidden="true">✒</div>
+      <h2>Your poem's story is waiting</h2>
+      <p>Paste a Pashto poem above — or try the famous Rahman Baba couplet — and Da Qalam AI will explain it in simple words, translate it, and unpack its feelings and message.</p>
+      <ol class="empty-steps">
+        <li><strong>1.</strong> Paste your poem</li>
+        <li><strong>2.</strong> Pick a language</li>
+        <li><strong>3.</strong> Press Analyze</li>
+      </ol>
+      <button type="button" class="btn btn-gold" data-action="sample">Try the Rahman Baba sample</button>
+      <p class="empty-note">Demo mode gives sample explanations. Connect Qwen for live AI analysis.</p>
+    </div>
+
+    <div id="results" class="results" hidden>
+      <div class="results-head">
+        <div>
+          <h2 id="results-title">Analysis</h2>
+          <p id="results-sub" class="results-sub"></p>
+        </div>
+        <button type="button" id="copy-btn" class="btn btn-ghost">⧉ Copy results</button>
+      </div>
+      <div id="demo-note" class="demo-note" hidden></div>
+      <div id="results-grid" class="results-grid"></div>
+    </div>
+
+    <div id="loading" class="loading" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <p>Reading your poem…</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Da Qalam AI — built for students of Pashto literature. Sample poem: Rahman Baba (17th century, public domain), from the Diwan.</p>
+    <p class="footer-small">Demo mode uses honest sample explanations and never pretends to be live AI. Live mode uses Qwen when an API key is configured (server-side only).</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+/* Da Qalam AI — premium dark navy & gold design.
+   Mobile-first. No framework. */
+
+:root {
+  --navy: #0a1628;
+  --navy-2: #0e1e38;
+  --navy-3: #12294a;
+  --gold: #c9a227;
+  --gold-2: #d4af37;
+  --gold-soft: rgba(201, 162, 39, 0.16);
+  --gold-border: rgba(212, 175, 55, 0.35);
+  --ink: #eaf0f8;
+  --muted: #9fb0c9;
+  --muted-2: #7c8daa;
+  --card: rgba(255, 255, 255, 0.035);
+  --card-border: rgba(255, 255, 255, 0.09);
+  --radius: 18px;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --font-display: "Fraunces", "Noto Naskh Arabic", serif;
+  --font-ui: "Inter", "Noto Naskh Arabic", system-ui, sans-serif;
+  --font-poetry: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(201, 162, 39, 0.13), transparent 60%),
+    radial-gradient(900px 480px at -10% 20%, rgba(31, 90, 160, 0.22), transparent 55%),
+    linear-gradient(180deg, var(--navy) 0%, #081120 100%);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.wrap { width: min(1020px, 100% - 2.5rem); margin-inline: auto; }
+.gold { color: var(--gold-2); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- header ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(10, 22, 40, 0.86);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--card-border);
+}
+.header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding-block: 0.85rem;
+}
+.brand { display: flex; align-items: center; gap: 0.8rem; }
+.brand-mark {
+  width: 46px; height: 46px; flex: none;
+  display: grid; place-items: center;
+  font-family: var(--font-poetry); font-size: 1.5rem; line-height: 1;
+  color: var(--navy);
+  background: linear-gradient(145deg, var(--gold-2), var(--gold));
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(201, 162, 39, 0.35);
+}
+.brand-name {
+  display: block; font-family: var(--font-display);
+  font-size: 1.3rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.1;
+}
+.brand-tag { display: block; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.04em; }
+.mode-badge {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+  padding: 0.42rem 0.8rem; border-radius: 999px; white-space: nowrap;
+  border: 1px solid var(--card-border); background: var(--card); color: var(--muted);
+}
+.mode-badge.mode-live { color: #7ee2a8; border-color: rgba(126, 226, 168, 0.4); background: rgba(126, 226, 168, 0.08); }
+.mode-badge.mode-demo { color: var(--gold-2); border-color: var(--gold-border); background: var(--gold-soft); }
+
+/* ---------- hero ---------- */
+.hero { text-align: center; padding: 3rem 0 2.2rem; animation: fadeUp 0.7s ease both; }
+.hero-eyebrow {
+  margin: 0 0 0.9rem; font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-2);
+}
+.hero h1 {
+  margin: 0 0 0.6rem; font-family: var(--font-display);
+  font-size: clamp(2.1rem, 6vw, 3.4rem); font-weight: 600; line-height: 1.12;
+}
+.hero-sub {
+  margin: 0 0 1rem; font-family: var(--font-poetry);
+  font-size: 1.25rem; line-height: 2.1; color: var(--gold-2);
+}
+.hero-desc { margin: 0 auto 1.4rem; max-width: 620px; color: var(--muted); font-size: 1.02rem; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.chip {
+  font-size: 0.8rem; font-weight: 500; color: var(--ink);
+  background: var(--card); border: 1px solid var(--card-border);
+  padding: 0.35rem 0.8rem; border-radius: 999px;
+}
+
+/* ---------- panels & cards ---------- */
+.panel {
+  background: linear-gradient(180deg, var(--navy-2), rgba(14, 30, 56, 0.75));
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.4rem;
+  margin-bottom: 1.4rem;
+  animation: fadeUp 0.7s ease both;
+}
+.results-panel { animation-delay: 0.08s; }
+.panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; }
+.panel-head h2 { margin: 0; font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; }
+.panel-hint { color: var(--muted-2); font-size: 0.85rem; }
+
+/* ---------- input ---------- */
+#poem-input {
+  width: 100%; min-height: 190px; resize: vertical;
+  font-family: var(--font-poetry); font-size: 1.3rem; line-height: 2.3;
+  color: var(--ink); background: rgba(8, 17, 32, 0.65);
+  border: 1px solid var(--card-border); border-radius: 14px;
+  padding: 1rem 1.2rem; outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+#poem-input::placeholder { color: var(--muted-2); }
+#poem-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.22); }
+.input-meta {
+  display: flex; justify-content: space-between; gap: 1rem;
+  color: var(--muted-2); font-size: 0.82rem; margin-top: 0.55rem;
+}
+.controls { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: center; justify-content: space-between; margin-top: 1.1rem; }
+.lang-switch {
+  display: inline-flex; background: rgba(8, 17, 32, 0.7);
+  border: 1px solid var(--card-border); border-radius: 999px; padding: 4px;
+}
+.lang-btn {
+  border: 0; background: transparent; color: var(--muted);
+  font-family: var(--font-ui); font-size: 0.92rem; font-weight: 600;
+  padding: 0.45rem 1rem; border-radius: 999px; cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.lang-btn:hover { color: var(--ink); }
+.lang-btn.is-active { background: linear-gradient(145deg, var(--gold-2), var(--gold)); color: var(--navy); }
+.actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.btn {
+  font-family: var(--font-ui); font-size: 0.95rem; font-weight: 600;
+  border-radius: 12px; padding: 0.7rem 1.15rem; cursor: pointer;
+  border: 1px solid transparent; transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn-gold {
+  color: var(--navy);
+  background: linear-gradient(145deg, var(--gold-2), var(--gold));
+  box-shadow: 0 8px 22px rgba(201, 162, 39, 0.28);
+}
+.btn-gold:hover { box-shadow: 0 10px 26px rgba(201, 162, 39, 0.4); }
+.btn-ghost { color: var(--ink); background: var(--card); border-color: var(--card-border); }
+.btn-ghost:hover { border-color: var(--gold-border); background: var(--gold-soft); }
+.btn:disabled { opacity: 0.55; cursor: wait; }
+
+/* ---------- empty state ---------- */
+.empty-state { text-align: center; padding: 2.2rem 1rem 1.6rem; }
+.empty-quill {
+  width: 74px; height: 74px; margin: 0 auto 1rem;
+  display: grid; place-items: center; font-size: 2rem;
+  color: var(--gold-2); background: var(--gold-soft);
+  border: 1px solid var(--gold-border); border-radius: 50%;
+}
+.empty-state h2 { margin: 0 0 0.6rem; font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; }
+.empty-state p { margin: 0 auto 1.2rem; max-width: 560px; color: var(--muted); }
+.empty-steps {
+  list-style: none; margin: 0 auto 1.5rem; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center;
+}
+.empty-steps li {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 999px; padding: 0.45rem 0.95rem; font-size: 0.88rem; color: var(--ink);
+}
+.empty-steps strong { color: var(--gold-2); }
+.empty-note { margin-top: 1rem; font-size: 0.83rem; color: var(--muted-2); }
+
+/* ---------- results ---------- */
+.results-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.results-head h2 { margin: 0; font-family: var(--font-display); font-size: 1.45rem; font-weight: 600; }
+.results-sub { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.9rem; }
+.demo-note {
+  border: 1px solid var(--gold-border); background: var(--gold-soft);
+  color: #f0d98c; border-radius: 12px; padding: 0.75rem 1rem;
+  font-size: 0.9rem; margin-bottom: 1rem;
+}
+.results-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+.result-card {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 14px; padding: 1.15rem 1.25rem;
+  animation: fadeUp 0.5s ease both;
+}
+.result-card h3 {
+  margin: 0 0 0.6rem; display: flex; align-items: center; gap: 0.55rem;
+  font-size: 0.98rem; font-weight: 700; letter-spacing: 0.02em; color: var(--gold-2);
+}
+.result-card h3 .card-icon {
+  width: 30px; height: 30px; flex: none; display: grid; place-items: center;
+  font-size: 0.95rem; background: var(--gold-soft);
+  border: 1px solid var(--gold-border); border-radius: 9px;
+}
+.result-card p { margin: 0; white-space: pre-line; }
+.result-card .poetry {
+  font-family: var(--font-poetry); font-size: 1.3rem; line-height: 2.3; color: var(--ink);
+}
+.result-card .urdu-text { font-family: "Noto Naskh Arabic", serif; font-size: 1.12rem; line-height: 2; }
+.result-card .en-text { font-size: 1rem; line-height: 1.7; color: var(--ink); }
+.result-card.wide { grid-column: 1 / -1; }
+.word-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 520px; }
+.table-wrap { overflow-x: auto; margin: 0 -0.25rem; padding: 0 0.25rem; }
+.word-table th, .word-table td { text-align: left; padding: 0.5rem 0.4rem; border-bottom: 1px solid var(--card-border); vertical-align: top; }
+.word-table th { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.word-table td:first-child { font-family: var(--font-poetry); font-size: 1.05rem; white-space: nowrap; }
+.word-table tr:last-child td { border-bottom: 0; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tag {
+  font-size: 0.88rem; font-weight: 500; padding: 0.4rem 0.85rem; border-radius: 999px;
+  background: var(--gold-soft); border: 1px solid var(--gold-border); color: #f0d98c;
+}
+.tag.cool { background: rgba(126, 226, 168, 0.08); border-color: rgba(126, 226, 168, 0.35); color: #9fe8bd; }
+.stats-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+.stat {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 0.55rem 0.95rem; font-size: 0.88rem; color: var(--muted);
+}
+.stat strong { color: var(--ink); font-size: 1.05rem; margin-right: 0.3rem; }
+.poet-line { font-size: 0.88rem; color: var(--muted); }
+.poet-line strong { color: var(--gold-2); }
+
+/* ---------- loading ---------- */
+.loading { text-align: center; padding: 2.5rem 1rem; color: var(--muted); }
+.spinner {
+  display: inline-block; width: 34px; height: 34px; margin-bottom: 0.7rem;
+  border: 3px solid var(--card-border); border-top-color: var(--gold-2);
+  border-radius: 50%; animation: spin 0.9s linear infinite;
+}
+
+/* ---------- footer ---------- */
+.site-footer { border-top: 1px solid var(--card-border); padding: 1.6rem 0 2.2rem; color: var(--muted); font-size: 0.88rem; text-align: center; }
+.site-footer p { margin: 0.3rem 0; }
+.footer-small { color: var(--muted-2); font-size: 0.8rem; }
+
+/* ---------- animations ---------- */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ---------- responsive ---------- */
+@media (min-width: 720px) {
+  .panel { padding: 1.8rem; }
+  .results-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .header-inner { flex-wrap: wrap; }
+  .mode-badge { font-size: 0.72rem; }
+  .controls { flex-direction: column; align-items: stretch; }
+  .lang-switch { justify-content: center; }
+  .actions { justify-content: stretch; }
+  .actions .btn { flex: 1; }
+  .results-head { flex-direction: column; }
+  .results-head .btn { width: 100%; }
+  #poem-input { font-size: 1.2rem; }
+}

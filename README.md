@@ -80,6 +80,7 @@ server — never in the frontend or in source code.
 | `server.py` | FastAPI: serves the site + `POST /api/analyze`, `GET /api/status` |
 | `demo.py` | Honest rule-based demo engine (glossary, themes, sample analysis) |
 | `qwen_client.py` | Qwen/DashScope client (httpx), key from env only |
+| `connector/` | Muse connector doc + `bin/qwen.py` helper for calling Qwen directly |
 | `requirements.txt` | fastapi, uvicorn, httpx |
 | `tests/` | pytest suite (demo engine + API) |
 

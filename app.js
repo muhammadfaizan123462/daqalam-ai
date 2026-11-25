@@ -261,19 +261,6 @@ function esc(s) {
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
-function setBadge(mode, provider) {
-  var badge = document.getElementById("mode-badge");
-  if (!badge) return;
-  if (mode === "live") {
-    var name = provider === "gemini" ? "Gemini" : "Qwen";
-    badge.textContent = "● Live AI (" + name + ")";
-    badge.className = "mode-badge mode-live";
-  } else {
-    badge.textContent = "● Demo mode — sample explanations";
-    badge.className = "mode-badge mode-demo";
-  }
-}
-
 function card(icon, title, innerHtml, extraClass) {
   return '<article class="result-card' + (extraClass ? " " + extraClass : "") + '">' +
     '<h3><span class="card-icon" aria-hidden="true">' + icon + '</span>' + esc(title) + '</h3>' +
@@ -329,7 +316,6 @@ function renderResult(result) {
   document.getElementById("empty-state").hidden = true;
   document.getElementById("loading").hidden = true;
   document.getElementById("results").hidden = false;
-  setBadge(result.mode, result.provider);
 }
 
 function showLoading(show) {
@@ -451,11 +437,6 @@ function init() {
     b.addEventListener("click", fillSample);
   });
   updateCounter();
-  /* Ask the server which mode it is in; stay on demo if unreachable. */
-  fetch("/api/status")
-    .then(function (resp) { return resp.json(); })
-    .then(function (s) { setBadge(s.mode === "live" ? "live" : "demo", s.provider); })
-    .catch(function () { setBadge("demo"); });
 }
 
 if (typeof document !== "undefined") {

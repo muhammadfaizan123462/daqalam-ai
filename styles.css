@@ -70,13 +70,6 @@ body {
   font-size: 1.3rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.1;
 }
 .brand-tag { display: block; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.04em; }
-.mode-badge {
-  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
-  padding: 0.42rem 0.8rem; border-radius: 999px; white-space: nowrap;
-  border: 1px solid var(--card-border); background: var(--card); color: var(--muted);
-}
-.mode-badge.mode-live { color: #7ee2a8; border-color: rgba(126, 226, 168, 0.4); background: rgba(126, 226, 168, 0.08); }
-.mode-badge.mode-demo { color: var(--gold-2); border-color: var(--gold-border); background: var(--gold-soft); }
 
 /* ---------- hero ---------- */
 .hero { text-align: center; padding: 3rem 0 2.2rem; animation: fadeUp 0.7s ease both; }
@@ -260,7 +253,6 @@ body {
 }
 @media (max-width: 560px) {
   .header-inner { flex-wrap: wrap; }
-  .mode-badge { font-size: 0.72rem; }
   .controls { flex-direction: column; align-items: stretch; }
   .lang-switch { justify-content: center; }
   .actions { justify-content: stretch; }

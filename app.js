@@ -316,7 +316,9 @@ function renderResult(result) {
   document.getElementById("results-title").textContent =
     result.language === "ps" ? "تحلیل" : result.language === "ur" ? "تجزیہ" : "Analysis";
   document.getElementById("results-sub").textContent =
-    result.mode === "live" ? "Answered by live AI (Qwen)." : "Demo analysis — sample explanations, not live AI.";
+    result.mode === "live"
+      ? "Answered by live AI (" + (result.provider === "gemini" ? "Gemini" : "Qwen") + ")."
+      : "Demo analysis — sample explanations, not live AI.";
   var note = document.getElementById("demo-note");
   if (result.mode === "demo") {
     note.textContent = result.demo_note || DEMO_NOTE[result.language] || DEMO_NOTE.en;
